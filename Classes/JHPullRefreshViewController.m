@@ -148,7 +148,7 @@
     [_refreshTableView reloadData];
     
     [_refreshViewUp removeFromSuperview];
-    _refreshViewUp.frame = CGRectMake(0, _refreshTableView.contentSize.height, self.view.frame.size.width, 65);
+    _refreshViewUp.frame = CGRectMake(0, _refreshTableView.contentSize.height, self.view.frame.size.width, 60);
     
     [_refreshTableView addSubview:_refreshViewUp];
 
@@ -166,7 +166,7 @@
                                                           owner:self
                                                         options:nil];
         _refreshViewDown = [ nibViews objectAtIndex: 0];
-        _refreshViewDown.frame = CGRectMake(0, -65, self.view.frame.size.width, 65);
+        _refreshViewDown.frame = CGRectMake(0, -60, self.view.frame.size.width, 60);
         
         [_refreshTableView addSubview:_refreshViewDown];
     }
@@ -175,7 +175,7 @@
                                                           owner:self
                                                         options:nil];
         _refreshViewUp = [ nibViews objectAtIndex: 0];
-        _refreshViewUp.frame = CGRectMake(0, _refreshTableView.frame.size.height, self.view.frame.size.width, 65);
+        _refreshViewUp.frame = CGRectMake(0, _refreshTableView.frame.size.height, self.view.frame.size.width, 60);
         
     }
 }
