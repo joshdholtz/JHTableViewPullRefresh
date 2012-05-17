@@ -96,61 +96,70 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     
-    if (_refreshType == kPullRefreshTypeDown || _refreshType == kPullRefreshTypeBoth) {
-        
-        float y = scrollView.contentOffset.y;
-        
-        if (y < -65.0f && !_refreshing) {
+    if (_refreshTableView) {
+    
+        if (_refreshType == kPullRefreshTypeDown || _refreshType == kPullRefreshTypeBoth) {
             
-            _refreshing = YES;
+            float y = scrollView.contentOffset.y;
             
-            [UIView beginAnimations:nil context:NULL];
-            [UIView setAnimationDuration:0.2];
-            _refreshTableView.contentInset = UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0f);
-            [UIView commitAnimations];
-            
-            [self reloadTableViewDataPullUp];
+            if (y < -65.0f && !_refreshing) {
+                
+                _refreshing = YES;
+                
+                [UIView beginAnimations:nil context:NULL];
+                [UIView setAnimationDuration:0.2];
+                _refreshTableView.contentInset = UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0f);
+                [UIView commitAnimations];
+                
+                [self reloadTableViewDataPullDown];
+            }
         }
+        
+        if (_refreshType == kPullRefreshTypeUp || _refreshType == kPullRefreshTypeBoth) {
+            
+            CGPoint offset = scrollView.contentOffset;
+            CGRect bounds = scrollView.bounds;
+            CGSize size = scrollView.contentSize;
+            UIEdgeInsets inset = scrollView.contentInset;
+            float y = offset.y + bounds.size.height - inset.bottom;
+            float h = size.height;
+            
+            if (y > (65.0f + h) && !_refreshing) {
+                
+                _refreshing = YES;
+                
+                [UIView beginAnimations:nil context:NULL];
+                [UIView setAnimationDuration:0.2];
+                _refreshTableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 60.0f, 0.0f);
+                [UIView commitAnimations];
+                
+                [self reloadTableViewDataPullUp];
+            }
+        }
+        
     }
     
-    if (_refreshType == kPullRefreshTypeUp || _refreshType == kPullRefreshTypeBoth) {
-        
-        CGPoint offset = scrollView.contentOffset;
-        CGRect bounds = scrollView.bounds;
-        CGSize size = scrollView.contentSize;
-        UIEdgeInsets inset = scrollView.contentInset;
-        float y = offset.y + bounds.size.height - inset.bottom;
-        float h = size.height;
-        
-        if (y > (65.0f + h) && !_refreshing) {
-            
-            _refreshing = YES;
-            
-            [UIView beginAnimations:nil context:NULL];
-            [UIView setAnimationDuration:0.2];
-            _refreshTableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 60.0f, 0.0f);
-            [UIView commitAnimations];
-            
-            [self reloadTableViewDataPullDown];
-        }
-    }
 }
 
 - (void)dataDidFinishRefreshing {
     
-    _refreshing = NO;
+    if (_refreshTableView) {
     
-    [UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:.3];
-	[_refreshTableView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
-	[UIView commitAnimations];
-    
-    [_refreshTableView reloadData];
-    
-    [_refreshViewUp removeFromSuperview];
-    _refreshViewUp.frame = CGRectMake(0, _refreshTableView.contentSize.height, self.view.frame.size.width, 60);
-    
-    [_refreshTableView addSubview:_refreshViewUp];
+        _refreshing = NO;
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:.3];
+        [_refreshTableView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
+        [UIView commitAnimations];
+        
+        [_refreshTableView reloadData];
+        
+        [_refreshViewUp removeFromSuperview];
+        _refreshViewUp.frame = CGRectMake(0, _refreshTableView.contentSize.height, self.view.frame.size.width, 60);
+        
+        [_refreshTableView addSubview:_refreshViewUp];
+        
+    }
 
     
 }
